@@ -1,0 +1,56 @@
+<h2>Efectos de scroll</h2>
+<p class="subtitle">Actualmente: fade-in + translateY simples con IntersectionObserver. ¿A qué nivel subimos?</p>
+
+<div class="options">
+
+  <div class="option" data-choice="A" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Scrub cinematográfico</h3>
+      <p>Cada sección tiene animaciones atadas al scroll (scrub). Los títulos se revelan letra a letra al bajar, los elementos entran con momentum. Sensación de película interactiva. Usa <code>gsap.to(... scrub:true)</code>. Impacto alto, complejidad media.</p>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.2);color:#48cae4;font-size:9px;padding:2px 8px;letter-spacing:1px">GSAP SCRUB</span>
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.2);color:#48cae4;font-size:9px;padding:2px 8px;letter-spacing:1px">SPLIT TEXT</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="B" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Secciones pinned</h3>
+      <p>Algunas secciones clave (Hero, Philosophy, Services) se "pegan" al viewport mientras el contenido interno se anima. El usuario scrollea pero la sección no avanza hasta que la animación termina. Da sensación de presentación.</p>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="background:rgba(164,201,255,.08);border:1px solid rgba(164,201,255,.2);color:#a4c9ff;font-size:9px;padding:2px 8px;letter-spacing:1px">PIN SECTIONS</span>
+        <span style="background:rgba(164,201,255,.08);border:1px solid rgba(164,201,255,.2);color:#a4c9ff;font-size:9px;padding:2px 8px;letter-spacing:1px">SCROLLTRIGGER</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="C" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Reveals mejorados + parallax layers</h3>
+      <p>Mantiene el scroll libre (sin pins) pero mejora los reveals actuales: parallax en imágenes y SVGs, texto que aparece con clip-path, números que cuentan al entrar, líneas que se dibujan. Más fluido, menos disruptivo.</p>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.2);color:#48cae4;font-size:9px;padding:2px 8px;letter-spacing:1px">CLIP-PATH</span>
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.2);color:#48cae4;font-size:9px;padding:2px 8px;letter-spacing:1px">PARALLAX</span>
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.2);color:#48cae4;font-size:9px;padding:2px 8px;letter-spacing:1px">SVG DRAW</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="D" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>A + C combinados</h3>
+      <p>Scrub en el Hero y secciones de impacto (título que se escribe al bajar), y reveals mejorados con parallax y clip-path en el resto. El balance ideal: wow en momentos clave, fluidez en el resto.</p>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.2);color:#48cae4;font-size:9px;padding:2px 8px;letter-spacing:1px">RECOMENDADO</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px">Los pins (B) hacen el scroll menos predecible para el usuario — generalmente mejor evitarlos en landing pages de servicios.</p>

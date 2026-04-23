@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>logo Mesh v4</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0e0e0e; font-family: system-ui, sans-serif; overflow-x: hidden; }
+
+.hero {
+  position: relative;
+  height: 560px;
+  overflow: hidden;
+  background: #0e0e0e;
+}
+
+/* Canvas mesh — behind everything */
+#meshCanvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+
+/* logo SVG — rendered as exact logo, tinted cyan, blended */
+.iso-ghost {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(260px, 36%, 420px);
+  aspect-ratio: 1;
+  z-index: 1;
+  pointer-events: none;
+  /* Invert black→white, then tint to cyan */
+  filter: invert(1) sepia(1) saturate(4) hue-rotate(168deg) brightness(1.1);
+  /* Screen blend: white SVG bg disappears on dark canvas */
+  mix-blend-mode: screen;
+  opacity: 0.45;
+}
+
+/* Nav */
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 52px;
+  background: rgba(14,14,14,.7); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.logo { display: flex; align-items: center; gap: 9px; }
+.logo-iso {
+  width: 22px; height: 22px;
+  filter: invert(1) sepia(1) saturate(4) hue-rotate(168deg) brightness(1.2);
+  opacity: .9;
+}
+.logo-text { color: #e5e2e1; font-size: .82rem; letter-spacing: .07em; }
+.logo-text em { color: #a4c9ff; font-style: italic; }
+.nav-links { display: flex; gap: 26px; }
+.nav-links span { color: #3a3a3a; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; font-family: monospace; }
+.nav-cta { color: #a4c9ff; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: 6px 14px; border: 1px solid rgba(164,201,255,.2); background: rgba(164,201,255,.04); font-family: monospace; }
+
+/* Hero text — left column only */
+.hero-content {
+  position: absolute; inset: 0;
+  display: flex; align-items: center;
+  padding: 80px 0 0 52px;
+  z-index: 10;
+  /* Gradient mask so text area is readable, right side is clear */
+  background: linear-gradient(to right, rgba(14,14,14,.6) 42%, transparent 70%);
+}
+.hero-left { max-width: 440px; }
+.eyebrow {
+  font-family: monospace; font-size: .56rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #48cae4; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.eyebrow::before { content: ''; width: 14px; height: 1px; background: currentColor; }
+h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+  color: #e5e2e1; line-height: 1.08; letter-spacing: -.025em; margin-bottom: 14px;
+}
+h1 .hl { color: #a4c9ff; }
+h1 em { color: #7a7a7a; font-style: italic; }
+.desc { font-size: .8rem; color: #606060; line-height: 1.75; margin-bottom: 26px; }
+.btns { display: flex; gap: 14px; align-items: center; }
+.btn-p {
+  background: #48cae4; color: #0e0e0e;
+  font-size: .62rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; padding: 10px 22px;
+}
+.btn-g {
+  color: #a4c9ff; font-size: .62rem; letter-spacing: .1em;
+  text-transform: uppercase; border-bottom: 1px solid rgba(164,201,255,.3);
+  padding-bottom: 1px;
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute; bottom: 28px; left: 52px;
+  display: flex; align-items: center; gap: 10px;
+  z-index: 10;
+}
+.scroll-hint span {
+  font-family: monospace; font-size: .52rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #2a2a2a;
+}
+.scroll-line { width: 40px; height: 1px; background: linear-gradient(to right, #48cae4, transparent); opacity: .4; }
+
+.note {
+  padding: 16px 32px;
+  background: rgba(72,202,228,.03); border-top: 1px solid rgba(72,202,228,.08);
+  font-family: monospace; font-size: .6rem; color: #48cae4; letter-spacing: .5px; line-height: 1.6;
+}
+.note span { color: #404040; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+
+  <!-- 1. Neural mesh canvas (z=0) -->
+  <canvas id="meshCanvas"></canvas>
+
+  <!-- 2. logo — exact SVG, tinted + screen blend (z=1) -->
+  <img src="logo.svg" class="iso-ghost" alt="" />
+
+  <!-- 3. Nav (z=20) -->
+  <nav class="nav">
+    <div class="logo">
+      <img src="logo.svg" class="logo-iso" alt="" />
+      <span class="logo-text">Philo<em>neural</em></span>
+    </div>
+    <div class="nav-links">
+      <span>Projects</span><span>Services</span><span>About</span>
+    </div>
+    <span class="nav-cta">Connect</span>
+  </nav>
+
+  <!-- 4. Hero content — left side (z=10) -->
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="eyebrow">Software Studio</div>
+      <h1>Precision<br/>engineering,<br/><span class="hl">delivered.</span></h1>
+      <p class="desc">Full-stack systems and AI integrations<br/>built to scale. No templates, no compromises.</p>
+      <div class="btns">
+        <span class="btn-p">View Projects →</span>
+        <span class="btn-g">Let's talk</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+
+</div>
+
+<div class="note">
+  → El logo es el SVG real tuyo (exacto), tintado cian con CSS filter + mix-blend-mode:screen. <span>Las partículas del mesh se conectan entre sí y forman el campo de fondo. El logo domina el lado derecho sin competencia.</span>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('meshCanvas')
+  const ctx = canvas.getContext('2d')
+  const DPR = window.devicePixelRatio || 1
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth  * DPR
+    canvas.height = canvas.offsetHeight * DPR
+    ctx.scale(DPR, DPR)
+  }
+  const W = () => canvas.offsetWidth
+  const H = () => canvas.offsetHeight
+
+  // Particles — slightly more, cover the whole canvas
+  const COUNT = 70
+  let pts = []
+  function buildPts() {
+    pts = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * W(),
+      y: Math.random() * H(),
+      vx: (Math.random() - .5) * .28,
+      vy: (Math.random() - .5) * .28,
+      r:  Math.random() * 1.2 + .5
+    }))
+  }
+
+  let mx = -1, my = -1
+  const hero = document.querySelector('.hero')
+  hero.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect()
+    mx = e.clientX - r.left; my = e.clientY - r.top
+  })
+  hero.addEventListener('mouseleave', () => { mx = -1; my = -1 })
+
+  function draw() {
+    ctx.clearRect(0, 0, W(), H())
+
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i]
+      p.x += p.vx; p.y += p.vy
+      if (p.x < -4) p.x = W() + 4
+      if (p.x > W() + 4) p.x = -4
+      if (p.y < -4) p.y = H() + 4
+      if (p.y > H() + 4) p.y = -4
+
+      // Subtle mouse repulsion
+      if (mx > 0) {
+        const dx = p.x - mx, dy = p.y - my, d = Math.hypot(dx, dy)
+        if (d < 100 && d > 0) { p.x += dx / d * .45; p.y += dy / d * .45 }
+      }
+
+      // Connections between particles
+      for (let j = i + 1; j < pts.length; j++) {
+        const q = pts[j]
+        const d = Math.hypot(p.x - q.x, p.y - q.y)
+        if (d < 90) {
+          ctx.beginPath()
+          ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y)
+          ctx.strokeStyle = `rgba(72,202,228,${(1 - d / 90) * 0.13})`
+          ctx.lineWidth = .55
+          ctx.stroke()
+        }
+      }
+
+      // Draw particle dot
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(164,201,255,0.42)'
+      ctx.fill()
+    }
+
+    requestAnimationFrame(draw)
+  }
+
+  resize()
+  buildPts()
+  window.addEventListener('resize', () => { resize(); buildPts() })
+  draw()
+})()
+</script>
+</body>
+</html>

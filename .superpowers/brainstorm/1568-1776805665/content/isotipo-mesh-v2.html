@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>logo en Neural Mesh v2</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #080808; color: #b5b5b5; font-family: system-ui, sans-serif; overflow-x: hidden; }
+
+.page-label {
+  padding: 14px 32px;
+  font-family: monospace; font-size: .6rem; letter-spacing: 2px;
+  color: #404040; text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.badge { background: rgba(72,202,228,.1); border: 1px solid rgba(72,202,228,.25); color: #48cae4; font-size: .58rem; letter-spacing: 1.5px; padding: 3px 10px; }
+
+.hero {
+  position: relative; height: 540px; overflow: hidden; background: #0e0e0e;
+}
+canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 52px;
+  background: rgba(14,14,14,.65); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+/* Use the real logo SVG, inverted + tinted */
+.logo-iso {
+  width: 24px; height: 24px;
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(170deg) brightness(1.2);
+  opacity: .9;
+}
+.logo-text { color: #e5e2e1; font-size: .82rem; letter-spacing: .07em; }
+.logo-text em { color: #a4c9ff; font-style: italic; }
+.nav-links { display: flex; gap: 26px; }
+.nav-links span { color: #3a3a3a; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; font-family: monospace; }
+.nav-cta { color: #a4c9ff; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: 6px 14px; border: 1px solid rgba(164,201,255,.2); background: rgba(164,201,255,.04); font-family: monospace; }
+
+.hero-grid {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; padding-top: 64px;
+}
+.hero-left { padding: 0 24px 0 52px; }
+.eyebrow {
+  font-family: monospace; font-size: .56rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #48cae4; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.eyebrow::before { content: ''; width: 14px; height: 1px; background: currentColor; }
+h1 {
+  font-size: clamp(2rem, 3.8vw, 3.2rem); font-weight: 300;
+  color: #e5e2e1; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 14px;
+}
+h1 .hl { color: #a4c9ff; }
+h1 em { color: #7a7a7a; font-style: italic; }
+.desc { font-size: .8rem; color: #606060; line-height: 1.75; max-width: 320px; margin-bottom: 24px; }
+.btns { display: flex; gap: 14px; align-items: center; }
+.btn-p { background: #48cae4; color: #0e0e0e; font-size: .62rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 10px 22px; }
+.btn-g { color: #a4c9ff; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid rgba(164,201,255,.3); padding-bottom: 1px; }
+
+.hero-right { display: flex; align-items: center; justify-content: center; padding: 0 40px 0 16px; }
+.code-card {
+  width: 100%; max-width: 300px;
+  background: rgba(8,8,8,.92); border: 1px solid rgba(72,202,228,.1);
+  box-shadow: 0 16px 48px rgba(0,0,0,.7), 0 0 30px rgba(72,202,228,.04);
+  position: relative; z-index: 5;
+}
+.code-tb { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,.04); display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.02); }
+.dots { display: flex; gap: 4px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; }
+.dr{background:rgba(255,90,90,.35)}.dy{background:rgba(255,190,50,.3)}.dg{background:rgba(50,200,90,.3)}
+.cf { font-family: monospace; font-size: .55rem; color: #3a3a3a; }
+.code-body { padding: 14px 16px; }
+.cl { display: flex; gap: 10px; line-height: 1.75; }
+.ln { font-family: monospace; font-size: .58rem; color: #252525; min-width: 14px; text-align: right; }
+.ct { font-family: monospace; font-size: .65rem; }
+.kw{color:#7dc8e8}.fn{color:#48cae4}.st{color:#7ec8a0}.cm{color:#333;font-style:italic}.tx{color:#7a7a7a}.pm{color:#b090e8}
+.cursor { display: inline-block; width: 2px; height: .7em; background: #48cae4; animation: cur 1s step-end infinite; vertical-align: middle; margin-left: 1px; }
+@keyframes cur { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.note {
+  padding: 18px 32px;
+  background: rgba(72,202,228,.03);
+  border-top: 1px solid rgba(72,202,228,.08);
+  font-family: monospace; font-size: .62rem; color: #48cae4; letter-spacing: .5px; line-height: 1.6;
+}
+.note span { color: #404040; }
+</style>
+</head>
+<body>
+
+<div class="page-label">
+  <span>logo real embebido en Neural Mesh</span>
+  <span class="badge">v2 · Logo correcto</span>
+</div>
+
+<div class="hero">
+  <canvas id="c"></canvas>
+
+  <nav class="nav">
+    <div class="logo">
+      <img src="logo.svg" class="logo-iso" alt="Philoneural logo" />
+      <span class="logo-text">Philo<em>neural</em></span>
+    </div>
+    <div class="nav-links">
+      <span>Projects</span><span>Services</span><span>About</span>
+    </div>
+    <span class="nav-cta">Connect</span>
+  </nav>
+
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="eyebrow">Software Studio</div>
+      <h1>Precision<br/>engineering,<br/><span class="hl">delivered.</span></h1>
+      <p class="desc">Full-stack systems and AI integrations built to scale. No templates, no compromises.</p>
+      <div class="btns">
+        <span class="btn-p">View Projects →</span>
+        <span class="btn-g">Let's talk</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="code-card">
+        <div class="code-tb">
+          <div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+          <span class="cf">architect.ts</span>
+        </div>
+        <div class="code-body">
+          <div class="cl"><span class="ln">1</span><span class="ct"><span class="cm">// build with intent</span></span></div>
+          <div class="cl"><span class="ln">2</span><span class="ct"><span class="kw">const</span> <span class="fn">build</span> <span class="tx">= (</span><span class="pm">spec</span><span class="tx">) =></span></span></div>
+          <div class="cl"><span class="ln">3</span><span class="ct"><span class="tx">  stack</span></span></div>
+          <div class="cl"><span class="ln">4</span><span class="ct"><span class="tx">    .</span><span class="fn">layer</span><span class="tx">(</span><span class="st">'api'</span><span class="tx">)</span></span></div>
+          <div class="cl"><span class="ln">5</span><span class="ct"><span class="tx">    .</span><span class="fn">layer</span><span class="tx">(</span><span class="st">'ai'</span><span class="tx">)</span></span></div>
+          <div class="cl"><span class="ln">6</span><span class="ct"><span class="tx">    .</span><span class="fn">deploy</span><span class="tx">()<span class="cursor"></span></span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  → El canvas usa los nodos del logo real como puntos fijos del mesh. <span>El logo aparece como un ghost grande en la zona derecha — las partículas se conectan a él orgánicamente. Nav usa el SVG real con tinte cian.</span>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('c')
+  const ctx = canvas.getContext('2d')
+  const DPR = window.devicePixelRatio || 1
+
+  // ── logo node positions (traced from real PNG, normalized 0-1 in a 1054x1054 space) ──
+  // Center node (the large black circle in the logo)
+  // The logo shape spans roughly this bounding box and these are the 8 node positions:
+  const ISO_N = [
+    { nx: 0.503, ny: 0.463, big: true  },  // 0: center (large)
+    { nx: 0.463, ny: 0.213, big: false },  // 1: top
+    { nx: 0.275, ny: 0.313, big: false },  // 2: upper-left
+    { nx: 0.198, ny: 0.493, big: false },  // 3: left
+    { nx: 0.258, ny: 0.645, big: false },  // 4: lower-left
+    { nx: 0.373, ny: 0.798, big: false },  // 5: bottom
+    { nx: 0.692, ny: 0.336, big: false },  // 6: upper-right
+    { nx: 0.659, ny: 0.602, big: false },  // 7: lower-right
+  ]
+  // Edges (index pairs) - matches real logo connections
+  const ISO_E = [
+    [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],  // center hub
+    [1,2],[2,3],          // left triangle
+    [1,6],                // top-right edge
+    [4,5],[5,7],          // bottom connections
+    [6,7],                // right edge
+  ]
+
+  let isoNodes = []
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth  * DPR
+    canvas.height = canvas.offsetHeight * DPR
+    ctx.scale(DPR, DPR)
+    buildIso()
+  }
+  const W = () => canvas.offsetWidth
+  const H = () => canvas.offsetHeight
+
+  function buildIso() {
+    // Place the ghost logo on the right half, vertically centered
+    // Scale it to occupy ~40% of the canvas height
+    const scale = H() * 0.72
+    const ox = W() * 0.68   // anchor: 68% from left = right column center
+    const oy = H() * 0.52   // anchor: slight below center
+
+    isoNodes = ISO_N.map((n, i) => ({
+      x: ox + (n.nx - 0.5) * scale,
+      y: oy + (n.ny - 0.5) * scale,
+      big: n.big,
+      phase: (i / ISO_N.length) * Math.PI * 2
+    }))
+  }
+
+  // ── Random particles ──
+  const COUNT = 60
+  let pts = []
+  function buildPts() {
+    pts = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * W(),
+      y: Math.random() * H(),
+      vx: (Math.random() - .5) * .32,
+      vy: (Math.random() - .5) * .32,
+      r: Math.random() * 1.1 + .45
+    }))
+  }
+
+  let mx = -1, my = -1
+  const hero = document.querySelector('.hero')
+  hero.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect()
+    mx = e.clientX - r.left; my = e.clientY - r.top
+  })
+  hero.addEventListener('mouseleave', () => { mx = -1; my = -1 })
+
+  let t = 0
+
+  function draw() {
+    t += 0.014
+    ctx.clearRect(0, 0, W(), H())
+
+    // ── Ghost logo edges ──
+    for (const [a, b] of ISO_E) {
+      const na = isoNodes[a], nb = isoNodes[b]
+      if (!na || !nb) continue
+      ctx.beginPath()
+      ctx.moveTo(na.x, na.y); ctx.lineTo(nb.x, nb.y)
+      ctx.strokeStyle = 'rgba(164,201,255,0.055)'
+      ctx.lineWidth = 1.1
+      ctx.stroke()
+    }
+
+    // ── Ghost logo nodes ──
+    for (const n of isoNodes) {
+      const pulse = 1 + Math.sin(t + n.phase) * 0.12
+      if (n.big) {
+        // Large center: three rings
+        for (const [ro, al] of [[3.8, 0.04], [2.2, 0.07], [1, 0.18]]) {
+          ctx.beginPath()
+          ctx.arc(n.x, n.y, 9 * ro * pulse * .28, 0, Math.PI * 2)
+          if (ro === 1) { ctx.fillStyle = `rgba(72,202,228,${al})`; ctx.fill() }
+          else { ctx.strokeStyle = `rgba(72,202,228,${al})`; ctx.lineWidth = 1; ctx.stroke() }
+        }
+      } else {
+        // Outer nodes: small ring + dot
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 5 * pulse * .55, 0, Math.PI * 2)
+        ctx.strokeStyle = 'rgba(164,201,255,0.07)'; ctx.lineWidth = 1; ctx.stroke()
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 2.8 * pulse * .55, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(164,201,255,0.15)'; ctx.fill()
+      }
+    }
+
+    // ── Particles ──
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy
+      if (p.x < -4) p.x = W() + 4
+      if (p.x > W() + 4) p.x = -4
+      if (p.y < -4) p.y = H() + 4
+      if (p.y > H() + 4) p.y = -4
+
+      // Subtle mouse repulsion
+      if (mx > 0) {
+        const dx = p.x - mx, dy = p.y - my, d = Math.hypot(dx, dy)
+        if (d < 90 && d > 0) { p.x += dx / d * .55; p.y += dy / d * .55 }
+      }
+
+      // Particle ↔ particle connections
+      for (const q of pts) {
+        if (q === p) continue
+        const d = Math.hypot(p.x - q.x, p.y - q.y)
+        if (d < 78) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y)
+          ctx.strokeStyle = `rgba(72,202,228,${(1 - d/78) * 0.1})`
+          ctx.lineWidth = .5; ctx.stroke()
+        }
+      }
+
+      // Particle ↔ logo node connections
+      for (const n of isoNodes) {
+        const d = Math.hypot(p.x - n.x, p.y - n.y)
+        const range = n.big ? 150 : 105
+        if (d < range) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(n.x, n.y)
+          const alpha = (1 - d / range) * (n.big ? 0.20 : 0.13)
+          ctx.strokeStyle = `rgba(72,202,228,${alpha})`
+          ctx.lineWidth = .55; ctx.stroke()
+        }
+      }
+
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(164,201,255,0.38)'; ctx.fill()
+    }
+
+    requestAnimationFrame(draw)
+  }
+
+  resize()
+  buildPts()
+  window.addEventListener('resize', () => { resize(); buildPts() })
+  draw()
+})()
+</script>
+</body>
+</html>

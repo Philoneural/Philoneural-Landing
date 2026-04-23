@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>logo Mesh v5</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0e0e0e; font-family: system-ui, sans-serif; overflow-x: hidden; }
+
+.hero {
+  position: relative; height: 560px; overflow: hidden; background: #0e0e0e;
+}
+canvas#c {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 52px;
+  background: rgba(14,14,14,.7); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.logo { display: flex; align-items: center; gap: 9px; }
+.logo-iso {
+  width: 22px; height: 22px;
+  filter: invert(1) sepia(1) saturate(4) hue-rotate(168deg) brightness(1.2);
+}
+.logo-text { color: #e5e2e1; font-size: .82rem; letter-spacing: .07em; }
+.logo-text em { color: #a4c9ff; font-style: italic; }
+.nav-links { display: flex; gap: 26px; }
+.nav-links span { color: #3a3a3a; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; font-family: monospace; }
+.nav-cta { color: #a4c9ff; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: 6px 14px; border: 1px solid rgba(164,201,255,.2); background: rgba(164,201,255,.04); font-family: monospace; }
+
+.hero-content {
+  position: absolute; inset: 0;
+  display: flex; align-items: center;
+  padding: 80px 0 0 52px;
+  z-index: 10;
+  background: linear-gradient(to right, rgba(14,14,14,.55) 40%, transparent 68%);
+}
+.hero-left { max-width: 420px; }
+.eyebrow {
+  font-family: monospace; font-size: .56rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #48cae4; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.eyebrow::before { content: ''; width: 14px; height: 1px; background: currentColor; }
+h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300;
+  color: #e5e2e1; line-height: 1.08; letter-spacing: -.025em; margin-bottom: 14px;
+}
+h1 .hl { color: #a4c9ff; }
+h1 em { color: #7a7a7a; font-style: italic; }
+.desc { font-size: .8rem; color: #606060; line-height: 1.75; margin-bottom: 26px; }
+.btns { display: flex; gap: 14px; align-items: center; }
+.btn-p { background: #48cae4; color: #0e0e0e; font-size: .62rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 10px 22px; }
+.btn-g { color: #a4c9ff; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid rgba(164,201,255,.3); padding-bottom: 1px; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <canvas id="c"></canvas>
+
+  <nav class="nav">
+    <div class="logo">
+      <img src="logo.svg" class="logo-iso" alt="" />
+      <span class="logo-text">Philo<em>neural</em></span>
+    </div>
+    <div class="nav-links">
+      <span>Projects</span><span>Services</span><span>About</span>
+    </div>
+    <span class="nav-cta">Connect</span>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="eyebrow">Software Studio</div>
+      <h1>Precision<br/>engineering,<br/><span class="hl">delivered.</span></h1>
+      <p class="desc">Full-stack systems and AI integrations built to scale. No templates, no compromises.</p>
+      <div class="btns">
+        <span class="btn-p">View Projects →</span>
+        <span class="btn-g">Let's talk</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('c')
+  const ctx = canvas.getContext('2d')
+  const DPR = window.devicePixelRatio || 1
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth  * DPR
+    canvas.height = canvas.offsetHeight * DPR
+    ctx.scale(DPR, DPR)
+  }
+  const W = () => canvas.offsetWidth
+  const H = () => canvas.offsetHeight
+
+  // ── Load & process logo PNG into a cyan ghost ──────
+  let isoReady = false
+  let isoCanvas = null
+  // After processing, we'll also extract node-like "bright spots" to connect particles to
+  let isoHotspots = []
+
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
+  img.src = 'logo.png'
+  img.onload = () => {
+    // Offscreen canvas to process pixels
+    const oc = document.createElement('canvas')
+    oc.width = img.width; oc.height = img.height
+    const octx = oc.getContext('2d')
+    octx.drawImage(img, 0, 0)
+
+    const imageData = octx.getImageData(0, 0, img.width, img.height)
+    const d = imageData.data
+
+    // Replace dark pixels (logo) → cyan; light pixels (bg) → transparent
+    for (let i = 0; i < d.length; i += 4) {
+      const brightness = (d[i] * 0.299 + d[i+1] * 0.587 + d[i+2] * 0.114)
+      if (brightness < 140) {
+        // Logo pixel → cyan #48cae4 = 72,202,228
+        const t = 1 - brightness / 140   // 0..1 (darker = more opaque)
+        d[i]   = 72
+        d[i+1] = 202
+        d[i+2] = 228
+        d[i+3] = Math.round(t * 210)     // semi-transparent, max ~0.82
+      } else {
+        // Background → transparent
+        d[i+3] = 0
+      }
+    }
+    octx.putImageData(imageData, 0, 0)
+    isoCanvas = oc
+
+    // Sample hotspots — find darkest clusters (the nodes) using a coarse grid
+    // Re-read original image to find node positions
+    const orig = document.createElement('canvas')
+    orig.width = img.width; orig.height = img.height
+    const origCtx = orig.getContext('2d')
+    origCtx.drawImage(img, 0, 0)
+    const od = origCtx.getImageData(0, 0, img.width, img.height).data
+    const step = 20  // sample every 20px
+    const accumulator = {}
+    for (let y = 0; y < img.height; y += step) {
+      for (let x = 0; x < img.width; x += step) {
+        const idx = (y * img.width + x) * 4
+        const b = (od[idx] * 0.299 + od[idx+1] * 0.587 + od[idx+2] * 0.114)
+        if (b < 60) {  // very dark = node or edge
+          const cx = Math.round(x / (step * 4)) * (step * 4)
+          const cy = Math.round(y / (step * 4)) * (step * 4)
+          const key = `${cx},${cy}`
+          accumulator[key] = (accumulator[key] || 0) + 1
+        }
+      }
+    }
+    // Keep top clusters
+    const sorted = Object.entries(accumulator).sort((a,b) => b[1]-a[1]).slice(0, 12)
+    isoHotspots = sorted.map(([key]) => {
+      const [x, y] = key.split(',').map(Number)
+      return { nx: x / img.width, ny: y / img.height }
+    })
+
+    isoReady = true
+  }
+
+  // ── Particles ─────────────────────────────────────────
+  const COUNT = 65
+  let pts = []
+  function buildPts() {
+    pts = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * W(), y: Math.random() * H(),
+      vx: (Math.random() - .5) * .28, vy: (Math.random() - .5) * .28,
+      r: Math.random() * 1.1 + .5
+    }))
+  }
+
+  let mx = -1, my = -1
+  document.querySelector('.hero').addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top
+  })
+  document.querySelector('.hero').addEventListener('mouseleave', () => { mx=-1; my=-1 })
+
+  // logo position on canvas
+  function isoRect() {
+    const margin = 0.04
+    const size = Math.min(W(), H()) * 0.68
+    const x = W() * 0.56 - size / 2
+    const y = H() * 0.5  - size / 2
+    return { x, y, size }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W(), H())
+
+    // Draw logo ghost
+    if (isoReady && isoCanvas) {
+      const { x, y, size } = isoRect()
+      ctx.save()
+      ctx.globalAlpha = 0.55
+      ctx.drawImage(isoCanvas, x, y, size, size)
+      ctx.restore()
+    }
+
+    // Compute hotspot canvas positions
+    const { x: ix, y: iy, size: is } = isoRect()
+    const hotspots = isoHotspots.map(h => ({
+      x: ix + h.nx * is,
+      y: iy + h.ny * is
+    }))
+
+    // Particles
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i]
+      p.x += p.vx; p.y += p.vy
+      if (p.x < -4) p.x = W()+4
+      if (p.x > W()+4) p.x = -4
+      if (p.y < -4) p.y = H()+4
+      if (p.y > H()+4) p.y = -4
+
+      if (mx > 0) {
+        const dx = p.x-mx, dy = p.y-my, d = Math.hypot(dx,dy)
+        if (d < 90 && d > 0) { p.x += dx/d*.45; p.y += dy/d*.45 }
+      }
+
+      // Particle ↔ particle
+      for (let j = i+1; j < pts.length; j++) {
+        const q = pts[j], d = Math.hypot(p.x-q.x, p.y-q.y)
+        if (d < 88) {
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y)
+          ctx.strokeStyle = `rgba(72,202,228,${(1-d/88)*.11})`
+          ctx.lineWidth = .5; ctx.stroke()
+        }
+      }
+
+      // Particle ↔ logo hotspots
+      for (const h of hotspots) {
+        const d = Math.hypot(p.x-h.x, p.y-h.y)
+        if (d < 120) {
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(h.x,h.y)
+          ctx.strokeStyle = `rgba(72,202,228,${(1-d/120)*.2})`
+          ctx.lineWidth = .55; ctx.stroke()
+        }
+      }
+
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2)
+      ctx.fillStyle = 'rgba(164,201,255,0.4)'; ctx.fill()
+    }
+
+    requestAnimationFrame(draw)
+  }
+
+  resize()
+  buildPts()
+  window.addEventListener('resize', () => { resize(); buildPts() })
+  draw()
+})()
+</script>
+</body>
+</html>

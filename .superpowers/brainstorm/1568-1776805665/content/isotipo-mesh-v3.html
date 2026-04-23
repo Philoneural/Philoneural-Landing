@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>logo Mesh v3</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #080808; font-family: system-ui, sans-serif; overflow-x: hidden; }
+
+.hero {
+  position: relative; height: 560px; overflow: hidden; background: #0e0e0e;
+}
+canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 52px;
+  background: rgba(14,14,14,.65); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-iso {
+  width: 24px; height: 24px;
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(170deg) brightness(1.3);
+  opacity: .9;
+}
+.logo-text { color: #e5e2e1; font-size: .82rem; letter-spacing: .07em; }
+.logo-text em { color: #a4c9ff; font-style: italic; }
+.nav-links { display: flex; gap: 26px; }
+.nav-links span { color: #3a3a3a; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; font-family: monospace; }
+.nav-cta { color: #a4c9ff; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: 6px 14px; border: 1px solid rgba(164,201,255,.2); background: rgba(164,201,255,.04); font-family: monospace; }
+
+/* Hero layout */
+.hero-grid {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; padding-top: 64px;
+  z-index: 2;
+}
+.hero-left { padding: 0 24px 0 52px; }
+.eyebrow {
+  font-family: monospace; font-size: .56rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #48cae4; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.eyebrow::before { content: ''; width: 14px; height: 1px; background: currentColor; }
+h1 {
+  font-size: clamp(2rem, 3.8vw, 3.2rem); font-weight: 300;
+  color: #e5e2e1; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 14px;
+}
+h1 .hl { color: #a4c9ff; }
+h1 em { color: #7a7a7a; font-style: italic; }
+.desc { font-size: .8rem; color: #606060; line-height: 1.75; max-width: 320px; margin-bottom: 24px; }
+.btns { display: flex; gap: 14px; align-items: center; }
+.btn-p { background: #48cae4; color: #0e0e0e; font-size: .62rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 10px 22px; }
+.btn-g { color: #a4c9ff; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid rgba(164,201,255,.3); padding-bottom: 1px; }
+
+/* Right side: logo large + code card floating */
+.hero-right {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  height: 100%;
+}
+/* Code card — smaller, top-right corner, semi-transparent */
+.code-card {
+  position: absolute;
+  top: 50%; right: 40px;
+  transform: translateY(-50%);
+  width: 240px;
+  background: rgba(8,8,8,.75);
+  border: 1px solid rgba(72,202,228,.12);
+  box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 20px rgba(72,202,228,.05);
+  backdrop-filter: blur(12px);
+  z-index: 3;
+}
+.code-tb { padding: 7px 12px; border-bottom: 1px solid rgba(255,255,255,.04); display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.015); }
+.dots { display: flex; gap: 4px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; }
+.dr{background:rgba(255,90,90,.3)}.dy{background:rgba(255,190,50,.25)}.dg{background:rgba(50,200,90,.25)}
+.cf { font-family: monospace; font-size: .52rem; color: #333; }
+.code-body { padding: 12px 14px; }
+.cl { display: flex; gap: 8px; line-height: 1.7; }
+.ln { font-family: monospace; font-size: .56rem; color: #222; min-width: 12px; text-align: right; }
+.ct { font-family: monospace; font-size: .62rem; }
+.kw{color:#7dc8e8}.fn{color:#48cae4}.st{color:#7ec8a0}.cm{color:#2e2e2e;font-style:italic}.tx{color:#6a6a6a}.pm{color:#b090e8}
+.cursor { display: inline-block; width: 2px; height: .65em; background: #48cae4; animation: cur 1s step-end infinite; vertical-align: middle; margin-left: 1px; }
+@keyframes cur { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.note {
+  padding: 16px 32px;
+  background: rgba(72,202,228,.03); border-top: 1px solid rgba(72,202,228,.08);
+  font-family: monospace; font-size: .62rem; color: #48cae4; letter-spacing: .5px; line-height: 1.6;
+}
+.note span { color: #404040; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <canvas id="c"></canvas>
+
+  <nav class="nav">
+    <div class="logo">
+      <img src="logo.svg" class="logo-iso" alt="" />
+      <span class="logo-text">Philo<em>neural</em></span>
+    </div>
+    <div class="nav-links">
+      <span>Projects</span><span>Services</span><span>About</span>
+    </div>
+    <span class="nav-cta">Connect</span>
+  </nav>
+
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="eyebrow">Software Studio</div>
+      <h1>Precision<br/>engineering,<br/><span class="hl">delivered.</span></h1>
+      <p class="desc">Full-stack systems and AI integrations built to scale. No templates, no compromises.</p>
+      <div class="btns">
+        <span class="btn-p">View Projects →</span>
+        <span class="btn-g">Let's talk</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <!-- Code card floats at z-index 3, logo ghost is on the canvas below -->
+      <div class="code-card">
+        <div class="code-tb">
+          <div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+          <span class="cf">architect.ts</span>
+        </div>
+        <div class="code-body">
+          <div class="cl"><span class="ln">1</span><span class="ct"><span class="cm">// build with intent</span></span></div>
+          <div class="cl"><span class="ln">2</span><span class="ct"><span class="kw">const</span> <span class="fn">build</span> <span class="tx">= (</span><span class="pm">spec</span><span class="tx">) =></span></span></div>
+          <div class="cl"><span class="ln">3</span><span class="ct"><span class="tx">  stack</span></span></div>
+          <div class="cl"><span class="ln">4</span><span class="ct"><span class="tx">    .</span><span class="fn">layer</span><span class="tx">(</span><span class="st">'api'</span><span class="tx">)</span></span></div>
+          <div class="cl"><span class="ln">5</span><span class="ct"><span class="tx">    .</span><span class="fn">layer</span><span class="tx">(</span><span class="st">'ai'</span><span class="tx">)</span></span></div>
+          <div class="cl"><span class="ln">6</span><span class="ct"><span class="tx">    .</span><span class="fn">deploy</span><span class="tx">()<span class="cursor"></span></span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  → logo como ghost grande en el canvas — nodos más brillantes, sin nada tapándolo. <span>El code card ahora es más pequeño y transparente (no compite). El logo domina el lado derecho del fondo.</span>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('c')
+  const ctx = canvas.getContext('2d')
+  const DPR = window.devicePixelRatio || 1
+
+  // Node positions traced from real logo PNG (normalized 0-1)
+  const ISO_N = [
+    { nx: 0.503, ny: 0.463, big: true  },  // 0: center (large)
+    { nx: 0.463, ny: 0.213, big: false },  // 1: top
+    { nx: 0.275, ny: 0.313, big: false },  // 2: upper-left
+    { nx: 0.198, ny: 0.493, big: false },  // 3: left
+    { nx: 0.258, ny: 0.645, big: false },  // 4: lower-left
+    { nx: 0.373, ny: 0.798, big: false },  // 5: bottom
+    { nx: 0.692, ny: 0.336, big: false },  // 6: upper-right
+    { nx: 0.659, ny: 0.602, big: false },  // 7: lower-right
+  ]
+  const ISO_E = [
+    [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],
+    [1,2],[2,3],[1,6],[4,5],[5,7],[6,7],
+  ]
+
+  let isoNodes = []
+  function buildIso() {
+    // Center the ghost across the FULL canvas, slightly right
+    // Large enough to dominate — 80% of canvas height
+    const scale = H() * 0.82
+    const ox = W() * 0.60
+    const oy = H() * 0.52
+
+    isoNodes = ISO_N.map((n, i) => ({
+      x: ox + (n.nx - 0.503) * scale,
+      y: oy + (n.ny - 0.463) * scale,
+      big: n.big,
+      phase: (i / ISO_N.length) * Math.PI * 2
+    }))
+  }
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth  * DPR
+    canvas.height = canvas.offsetHeight * DPR
+    ctx.scale(DPR, DPR)
+    buildIso()
+  }
+  const W = () => canvas.offsetWidth
+  const H = () => canvas.offsetHeight
+
+  const COUNT = 55
+  let pts = []
+  function buildPts() {
+    pts = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * W(),
+      y: Math.random() * H(),
+      vx: (Math.random() - .5) * .3,
+      vy: (Math.random() - .5) * .3,
+      r: Math.random() * 1.1 + .5
+    }))
+  }
+
+  let mx = -1, my = -1
+  const hero = document.querySelector('.hero')
+  hero.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect()
+    mx = e.clientX - r.left; my = e.clientY - r.top
+  })
+  hero.addEventListener('mouseleave', () => { mx = -1; my = -1 })
+
+  let t = 0
+
+  function draw() {
+    t += 0.013
+    ctx.clearRect(0, 0, W(), H())
+
+    // ── logo ghost edges — bright ──
+    for (const [a, b] of ISO_E) {
+      const na = isoNodes[a], nb = isoNodes[b]
+      if (!na || !nb) continue
+      ctx.beginPath()
+      ctx.moveTo(na.x, na.y); ctx.lineTo(nb.x, nb.y)
+      ctx.strokeStyle = 'rgba(72,202,228,0.22)'
+      ctx.lineWidth = 1.4
+      ctx.stroke()
+    }
+
+    // ── logo ghost nodes — bright with glow ──
+    for (const n of isoNodes) {
+      const pulse = 1 + Math.sin(t + n.phase) * 0.1
+
+      if (n.big) {
+        // Outer glow rings
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 42 * pulse, 0, Math.PI * 2)
+        ctx.strokeStyle = 'rgba(72,202,228,0.05)'
+        ctx.lineWidth = 1; ctx.stroke()
+
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 28 * pulse, 0, Math.PI * 2)
+        ctx.strokeStyle = 'rgba(72,202,228,0.09)'
+        ctx.lineWidth = 1; ctx.stroke()
+
+        // Core
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 14 * pulse, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(72,202,228,0.18)'
+        ctx.fill()
+
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 7 * pulse, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(72,202,228,0.55)'
+        ctx.fill()
+
+        // Hard center dot
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 3.5, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(72,202,228,0.85)'
+        ctx.fill()
+      } else {
+        // Outer ring
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 14 * pulse, 0, Math.PI * 2)
+        ctx.strokeStyle = 'rgba(164,201,255,0.1)'
+        ctx.lineWidth = 1; ctx.stroke()
+
+        // Glow fill
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 8 * pulse, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(164,201,255,0.18)'
+        ctx.fill()
+
+        // Hard dot
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, 3.5, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(164,201,255,0.75)'
+        ctx.fill()
+      }
+    }
+
+    // ── Random particles ──
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy
+      if (p.x < -4) p.x = W() + 4
+      if (p.x > W() + 4) p.x = -4
+      if (p.y < -4) p.y = H() + 4
+      if (p.y > H() + 4) p.y = -4
+
+      if (mx > 0) {
+        const dx = p.x - mx, dy = p.y - my, d = Math.hypot(dx, dy)
+        if (d < 90 && d > 0) { p.x += dx / d * .5; p.y += dy / d * .5 }
+      }
+
+      for (const q of pts) {
+        if (q === p) continue
+        const d = Math.hypot(p.x - q.x, p.y - q.y)
+        if (d < 75) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y)
+          ctx.strokeStyle = `rgba(72,202,228,${(1 - d/75) * 0.1})`
+          ctx.lineWidth = .5; ctx.stroke()
+        }
+      }
+
+      for (const n of isoNodes) {
+        const d = Math.hypot(p.x - n.x, p.y - n.y)
+        const range = n.big ? 160 : 110
+        if (d < range) {
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(n.x, n.y)
+          ctx.strokeStyle = `rgba(72,202,228,${(1 - d/range) * (n.big ? 0.22 : 0.15)})`
+          ctx.lineWidth = .55; ctx.stroke()
+        }
+      }
+
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(164,201,255,0.4)'; ctx.fill()
+    }
+
+    requestAnimationFrame(draw)
+  }
+
+  resize()
+  buildPts()
+  window.addEventListener('resize', () => { resize(); buildPts() })
+  draw()
+})()
+</script>
+</body>
+</html>

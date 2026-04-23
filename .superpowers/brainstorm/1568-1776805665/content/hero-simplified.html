@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Simplificado</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #080808; color: #b5b5b5; font-family: system-ui, sans-serif; }
+
+.page-label {
+  padding: 16px 32px;
+  font-family: monospace;
+  font-size: .6rem;
+  letter-spacing: 2px;
+  color: #404040;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+/* ── Shared hero wrapper ── */
+.hero-wrap {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  background: #0e0e0e;
+  cursor: pointer;
+  transition: outline .2s;
+}
+.hero-wrap.selected { outline: 2px solid #48cae4; }
+.hero-label {
+  position: absolute;
+  top: 12px; right: 16px;
+  z-index: 20;
+  font-family: monospace;
+  font-size: .58rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(14,14,14,.85);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #606060;
+  padding: 4px 10px;
+}
+.hero-wrap.selected .hero-label {
+  background: rgba(72,202,228,.1);
+  border-color: rgba(72,202,228,.3);
+  color: #48cae4;
+}
+
+/* Nav shared */
+.mock-nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 44px;
+  background: rgba(14,14,14,.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.mock-logo { color: #e5e2e1; font-size: .82rem; letter-spacing: .07em; }
+.mock-logo em { color: #a4c9ff; font-style: italic; }
+.mock-nav-links { display: flex; gap: 24px; }
+.mock-nav-links span { color: #3a3a3a; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; font-family: monospace; }
+.mock-connect {
+  color: #a4c9ff; font-size: .58rem; letter-spacing: .14em;
+  text-transform: uppercase; padding: 5px 14px;
+  border: 1px solid rgba(164,201,255,.2);
+  background: rgba(164,201,255,.04);
+  font-family: monospace;
+}
+
+/* ── OPTION A: Texto + Code card (minimalista) ── */
+.oa-grid {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding-top: 56px;
+}
+.oa-left { padding: 0 28px 0 44px; }
+.oa-eyebrow {
+  font-family: monospace; font-size: .56rem; letter-spacing: .2em;
+  text-transform: uppercase; color: #48cae4; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.oa-eyebrow::before { content: ''; width: 14px; height: 1px; background: currentColor; }
+.oa-h1 {
+  font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 300;
+  color: #e5e2e1; line-height: 1.1; letter-spacing: -.025em;
+  margin-bottom: 14px;
+}
+.oa-h1 .hl { color: #a4c9ff; }
+.oa-h1 em { color: #8e9192; font-style: italic; }
+.oa-desc { font-size: .78rem; color: #606060; line-height: 1.7; margin-bottom: 20px; max-width: 300px; }
+.oa-btns { display: flex; gap: 12px; align-items: center; }
+.btn-p {
+  background: #48cae4; color: #0e0e0e;
+  font-size: .62rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; padding: 9px 20px;
+}
+.btn-g {
+  color: #a4c9ff; font-size: .62rem; letter-spacing: .1em;
+  text-transform: uppercase; border-bottom: 1px solid rgba(164,201,255,.3);
+  padding-bottom: 1px;
+}
+.oa-right {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 40px 0 16px;
+}
+.code-card {
+  width: 100%; max-width: 320px;
+  background: rgba(8,8,8,.95);
+  border: 1px solid rgba(72,202,228,.1);
+  box-shadow: 0 16px 48px rgba(0,0,0,.7), 0 0 30px rgba(72,202,228,.04);
+}
+.code-tb {
+  padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,.04);
+  display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.02);
+}
+.dots { display: flex; gap: 4px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; }
+.dr { background: rgba(255,90,90,.35); }
+.dy { background: rgba(255,190,50,.3); }
+.dg { background: rgba(50,200,90,.3); }
+.cf { font-family: monospace; font-size: .55rem; color: #3a3a3a; }
+.code-body { padding: 14px 16px; }
+.cl { display: flex; gap: 10px; line-height: 1.75; }
+.ln { font-family: monospace; font-size: .58rem; color: #252525; min-width: 14px; text-align: right; }
+.ct { font-family: monospace; font-size: .65rem; }
+.kw { color: #7dc8e8; } .fn { color: #48cae4; } .st { color: #7ec8a0; }
+.cm { color: #333; font-style: italic; } .tx { color: #7a7a7a; } .pm { color: #b090e8; }
+.cursor { display: inline-block; width: 2px; height: .7em; background: #48cae4; animation: cur 1s step-end infinite; vertical-align: middle; margin-left: 1px; }
+@keyframes cur { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── OPTION B: Solo texto, amplio, respirado ── */
+.ob-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px 44px 40px;
+  max-width: 680px;
+}
+.ob-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(72,202,228,.06); border: 1px solid rgba(72,202,228,.16);
+  border-radius: 20px; padding: 3px 11px;
+  font-family: monospace; font-size: .55rem; letter-spacing: .1em;
+  color: #48cae4; margin-bottom: 20px; width: fit-content;
+}
+.ob-chip::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #48cae4; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(1.6)} }
+.ob-h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 300;
+  color: #e5e2e1; line-height: 1.05; letter-spacing: -.03em;
+  margin-bottom: 16px;
+}
+.ob-h1 .hl { color: #a4c9ff; }
+.ob-h1 em { color: #7a7a7a; font-style: italic; }
+.ob-desc { font-size: .82rem; color: #606060; line-height: 1.8; max-width: 420px; margin-bottom: 28px; }
+.ob-btns { display: flex; gap: 14px; align-items: center; }
+
+/* Divider between options */
+.divider {
+  border: none; border-top: 1px solid rgba(255,255,255,.04);
+  margin: 0;
+}
+.options-label {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.opt-label {
+  padding: 12px 32px;
+  font-family: monospace; font-size: .58rem; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #404040;
+  border-right: 1px solid rgba(255,255,255,.04);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.opt-label:last-child { border-right: none; }
+.opt-desc { font-size: .6rem; color: #2a2a2a; }
+</style>
+</head>
+<body>
+
+<div class="page-label">Hero simplificado — elige una versión</div>
+
+<div class="options-label">
+  <div class="opt-label">
+    <span>Opción A — Split + Code</span>
+    <span class="opt-desc">2 columnas: texto izq · código der</span>
+  </div>
+  <div class="opt-label">
+    <span>Opción B — Full text, espacioso</span>
+    <span class="opt-desc">1 columna centrada, mucho aire</span>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr">
+
+  <!-- ── OPTION A ── -->
+  <div class="hero-wrap" id="optA" onclick="pick('A')" style="border-right:1px solid rgba(255,255,255,.04)">
+    <canvas id="cA" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <nav class="mock-nav">
+      <span class="mock-logo">Philo<em>neural</em></span>
+      <div class="mock-nav-links"><span>Projects</span><span>Services</span><span>About</span></div>
+      <span class="mock-connect">Connect</span>
+    </nav>
+    <div class="oa-grid">
+      <div class="oa-left">
+        <div class="oa-eyebrow">Software Studio</div>
+        <h1 class="oa-h1">
+          Precision<br/>engineering,<br/><span class="hl">delivered.</span>
+        </h1>
+        <p class="oa-desc">Full-stack systems and AI integrations built to scale. No templates, no compromises.</p>
+        <div class="oa-btns">
+          <span class="btn-p">View Projects</span>
+          <span class="btn-g">Let's talk →</span>
+        </div>
+      </div>
+      <div class="oa-right">
+        <div class="code-card">
+          <div class="code-tb">
+            <div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+            <span class="cf">architect.ts</span>
+          </div>
+          <div class="code-body">
+            <div class="cl"><span class="ln">1</span><span class="ct"><span class="cm">// build with intent</span></span></div>
+            <div class="cl"><span class="ln">2</span><span class="ct"><span class="kw">const</span> <span class="fn">build</span> <span class="tx">= (</span><span class="pm">spec</span><span class="tx">) =></span></span></div>
+            <div class="cl"><span class="ln">3</span><span class="ct"><span class="tx">  stack</span></span></div>
+            <div class="cl"><span class="ln">4</span><span class="ct"><span class="tx">    .</span><span class="fn">layer</span><span class="tx">(</span><span class="st">'api'</span><span class="tx">)</span></span></div>
+            <div class="cl"><span class="ln">5</span><span class="ct"><span class="tx">    .</span><span class="fn">layer</span><span class="tx">(</span><span class="st">'ai'</span><span class="tx">)</span></span></div>
+            <div class="cl"><span class="ln">6</span><span class="ct"><span class="tx">    .</span><span class="fn">deploy</span><span class="tx">()<span class="cursor"></span></span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="hero-label" id="lblA">Clic para elegir</span>
+  </div>
+
+  <!-- ── OPTION B ── -->
+  <div class="hero-wrap" id="optB" onclick="pick('B')">
+    <canvas id="cB" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <nav class="mock-nav">
+      <span class="mock-logo">Philo<em>neural</em></span>
+      <div class="mock-nav-links"><span>Projects</span><span>Services</span><span>About</span></div>
+      <span class="mock-connect">Connect</span>
+    </nav>
+    <div class="ob-inner">
+      <div class="ob-chip">Software Studio</div>
+      <h1 class="ob-h1">
+        Precision<br/>
+        engineering,<br/>
+        <span class="hl">delivered.</span>
+      </h1>
+      <p class="ob-desc">Full-stack systems and AI integrations built to scale. No templates, no compromises.</p>
+      <div class="ob-btns">
+        <span class="btn-p">View Projects →</span>
+        <span class="btn-g">Let's talk</span>
+      </div>
+    </div>
+    <span class="hero-label" id="lblB">Clic para elegir</span>
+  </div>
+
+</div>
+
+<div style="padding:20px 32px;background:rgba(255,255,255,.01);border-top:1px solid rgba(255,255,255,.04)">
+  <p style="font-family:monospace;font-size:.6rem;color:#404040;letter-spacing:.5px">
+    Ambas versiones usan el mismo headline, descripción y botones. La diferencia: A tiene código visible (comunica tech desde el primer segundo), B tiene más aire y tipografía (deja respirar el mensaje).
+    <br/>Lo que <strong style="color:#606060">no aparece en ninguna</strong>: stack badges, métricas, chip de año — todo eso va en secciones siguientes.
+  </p>
+</div>
+
+<script>
+function mesh(id) {
+  const c = document.getElementById(id)
+  if (!c) return
+  const ctx = c.getContext('2d')
+  function r() {
+    c.width = c.offsetWidth * (devicePixelRatio||1)
+    c.height = c.offsetHeight * (devicePixelRatio||1)
+    ctx.scale(devicePixelRatio||1, devicePixelRatio||1)
+  }
+  r()
+  const W = () => c.offsetWidth, H = () => c.offsetHeight
+  const pts = Array.from({length:40}, () => ({
+    x: Math.random()*800, y: Math.random()*400,
+    vx: (Math.random()-.5)*.28, vy: (Math.random()-.5)*.28,
+    s: Math.random()*1.2+.5
+  }))
+  ;(function draw() {
+    ctx.clearRect(0,0,W(),H())
+    for (let i=0;i<pts.length;i++) {
+      const p=pts[i]; p.x+=p.vx; p.y+=p.vy
+      if(p.x<0||p.x>W()) p.vx*=-1
+      if(p.y<0||p.y>H()) p.vy*=-1
+      for(let j=i+1;j<pts.length;j++){
+        const q=pts[j],d=Math.hypot(p.x-q.x,p.y-q.y)
+        if(d<85){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(72,202,228,${(1-d/85)*.13})`;ctx.lineWidth=.5;ctx.stroke()}
+      }
+      ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fillStyle='rgba(164,201,255,.38)';ctx.fill()
+    }
+    requestAnimationFrame(draw)
+  })()
+}
+mesh('cA'); mesh('cB')
+
+function pick(opt) {
+  ['A','B'].forEach(o => {
+    document.getElementById('opt'+o).classList.toggle('selected', o===opt)
+    document.getElementById('lbl'+o).textContent = o===opt ? '✓ Seleccionada' : 'Clic para elegir'
+  })
+  if (window.__recordChoice) window.__recordChoice(opt, 'Opción '+opt)
+}
+</script>
+</body>
+</html>

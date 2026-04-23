@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/allan/Documents/GitHub/**)",
+      "Bash(npx create-next-app@latest philoneural --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --yes)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(python3 \"C:/Users/allan/.claude/plugins/marketplaces/ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"software studio dark elegant premium landing page\" --design-system -p \"Philoneural\" -f markdown)",
+      "Bash(python \"C:/Users/allan/.claude/plugins/marketplaces/ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"software studio dark elegant premium landing page\" --design-system -p \"Philoneural\" -f markdown)",
+      "Bash(python \"C:/Users/allan/.claude/plugins/marketplaces/ui-ux-pro-max-skill/cli/assets/scripts/search.py\" \"software studio dark elegant premium landing page\" --design-system -p \"Philoneural\" -f markdown)",
+      "Bash(npm run:*)",
+      "Bash(bash \"C:/Users/allan/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/start-server.sh\" --project-dir \"C:/Users/allan/Documents/GitHub/Philoneural-Landing\")"
+    ]
+  }
+}

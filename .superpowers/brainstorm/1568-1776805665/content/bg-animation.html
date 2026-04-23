@@ -1,0 +1,175 @@
+<h2>Animación de fondo</h2>
+<p class="subtitle">El BgCanvas actual tiene partículas flotantes simples. ¿Cómo lo evolucionamos?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="A" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0e0e0e;min-height:220px;overflow:hidden;position:relative;">
+      <canvas id="ca" style="width:100%;height:220px;display:block"></canvas>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+        <span style="color:#48cae4;font-family:monospace;font-size:9px;letter-spacing:2px;opacity:.5;text-transform:uppercase">Neural Network Mesh</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Neural Mesh Conectado</h3>
+      <p>Nodos que se conectan con líneas cuando se acercan, como un grafo de red neuronal. Evolución directa del actual — más inteligente y relevante para software/AI. Reemplaza partículas simples.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0e0e0e;min-height:220px;overflow:hidden;position:relative;">
+      <canvas id="cb" style="width:100%;height:220px;display:block"></canvas>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+        <span style="color:#48cae4;font-family:monospace;font-size:9px;letter-spacing:2px;opacity:.5;text-transform:uppercase">Grid + Pulse</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Grid Técnico con Pulsos</h3>
+      <p>Una cuadrícula de puntos fina (dot grid) con ondas de pulso que se expanden periódicamente — como un radar o circuito PCB activo. Muy "engineering", sutil y elegante.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="C" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0e0e0e;min-height:220px;overflow:hidden;position:relative;">
+      <canvas id="cc" style="width:100%;height:220px;display:block"></canvas>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+        <span style="color:#48cae4;font-family:monospace;font-size:9px;letter-spacing:2px;opacity:.5;text-transform:uppercase">Ambos</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Neural Mesh + Grid (capas)</h3>
+      <p>Combinación: grid de puntos estático como base, con nodos que se mueven y conectan encima. Más profundidad visual. Funciona especialmente bien en el Hero y secciones clave.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Option A: Neural Mesh ──────────────────────────────
+(function(){
+  const canvas = document.getElementById('ca')
+  if(!canvas) return
+  const ctx = canvas.getContext('2d')
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio
+  canvas.height = 220 * window.devicePixelRatio
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+  const W = canvas.offsetWidth, H = 220
+  const pts = Array.from({length:38},()=>({
+    x: Math.random()*W, y: Math.random()*H,
+    vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4
+  }))
+  function drawA(){
+    ctx.clearRect(0,0,W,H)
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i]; p.x+=p.vx; p.y+=p.vy
+      if(p.x<0||p.x>W) p.vx*=-1
+      if(p.y<0||p.y>H) p.vy*=-1
+      for(let j=i+1;j<pts.length;j++){
+        const q=pts[j], d=Math.hypot(p.x-q.x,p.y-q.y)
+        if(d<90){
+          ctx.beginPath()
+          ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y)
+          ctx.strokeStyle=`rgba(72,202,228,${(1-d/90)*.18})`
+          ctx.lineWidth=.6; ctx.stroke()
+        }
+      }
+      ctx.beginPath()
+      ctx.arc(p.x,p.y,1.4,0,Math.PI*2)
+      ctx.fillStyle='rgba(164,201,255,.55)'; ctx.fill()
+    }
+    requestAnimationFrame(drawA)
+  }
+  drawA()
+})()
+
+// ── Option B: Dot Grid + Pulse ─────────────────────────
+(function(){
+  const canvas = document.getElementById('cb')
+  if(!canvas) return
+  const ctx = canvas.getContext('2d')
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio
+  canvas.height = 220 * window.devicePixelRatio
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+  const W = canvas.offsetWidth, H = 220
+  const spacing = 22
+  let pulses=[]
+  setInterval(()=>{
+    pulses.push({x:Math.random()*W,y:Math.random()*H,r:0,max:120,speed:1.2})
+  },2200)
+  function drawB(){
+    ctx.clearRect(0,0,W,H)
+    // Dot grid
+    for(let x=spacing/2;x<W;x+=spacing){
+      for(let y=spacing/2;y<H;y+=spacing){
+        let glow=0
+        for(const p of pulses){
+          const d=Math.hypot(x-p.x,y-p.y)
+          if(Math.abs(d-p.r)<14) glow=Math.max(glow,(1-Math.abs(d-p.r)/14)*.7)
+        }
+        ctx.beginPath()
+        ctx.arc(x,y,glow?1.6:.9,0,Math.PI*2)
+        ctx.fillStyle=glow?`rgba(72,202,228,${.15+glow*.5})`:'rgba(72,202,228,.1)'
+        ctx.fill()
+      }
+    }
+    // Pulse rings
+    pulses=pulses.filter(p=>p.r<p.max)
+    for(const p of pulses){
+      p.r+=p.speed
+      ctx.beginPath()
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+      ctx.strokeStyle=`rgba(72,202,228,${(1-p.r/p.max)*.12})`
+      ctx.lineWidth=1; ctx.stroke()
+    }
+    requestAnimationFrame(drawB)
+  }
+  drawB()
+})()
+
+// ── Option C: Both ─────────────────────────────────────
+(function(){
+  const canvas = document.getElementById('cc')
+  if(!canvas) return
+  const ctx = canvas.getContext('2d')
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio
+  canvas.height = 220 * window.devicePixelRatio
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+  const W = canvas.offsetWidth, H = 220
+  const spacing = 24
+  const pts = Array.from({length:22},()=>({
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3
+  }))
+  let pulses=[]
+  setInterval(()=>{ pulses.push({x:Math.random()*W,y:Math.random()*H,r:0,max:100,speed:1}) },3000)
+  function drawC(){
+    ctx.clearRect(0,0,W,H)
+    // Base grid
+    for(let x=spacing/2;x<W;x+=spacing){
+      for(let y=spacing/2;y<H;y+=spacing){
+        let glow=0
+        for(const p of pulses){const d=Math.hypot(x-p.x,y-p.y);if(Math.abs(d-p.r)<12) glow=Math.max(glow,(1-Math.abs(d-p.r)/12)*.6)}
+        ctx.beginPath(); ctx.arc(x,y,glow?1.4:.8,0,Math.PI*2)
+        ctx.fillStyle=glow?`rgba(72,202,228,${.12+glow*.4})`:'rgba(72,202,228,.08)'; ctx.fill()
+      }
+    }
+    // Pulses
+    pulses=pulses.filter(p=>p.r<p.max)
+    for(const p of pulses){ p.r+=p.speed; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.strokeStyle=`rgba(72,202,228,${(1-p.r/p.max)*.1})`; ctx.lineWidth=1; ctx.stroke() }
+    // Mesh on top
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i]; p.x+=p.vx; p.y+=p.vy
+      if(p.x<0||p.x>W) p.vx*=-1; if(p.y<0||p.y>H) p.vy*=-1
+      for(let j=i+1;j<pts.length;j++){
+        const q=pts[j],d=Math.hypot(p.x-q.x,p.y-q.y)
+        if(d<100){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.strokeStyle=`rgba(164,201,255,${(1-d/100)*.2})`; ctx.lineWidth=.7; ctx.stroke() }
+      }
+      ctx.beginPath(); ctx.arc(p.x,p.y,1.8,0,Math.PI*2); ctx.fillStyle='rgba(164,201,255,.6)'; ctx.fill()
+    }
+    requestAnimationFrame(drawC)
+  }
+  drawC()
+})()
+</script>
+
+<p class="subtitle" style="margin-top:20px">Las 3 animaciones están corriendo en vivo. Haz clic para seleccionar.</p>

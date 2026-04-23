@@ -1,0 +1,114 @@
+<h2>¿Qué estilo de ink art?</h2>
+<p class="subtitle">Elige la dirección visual para los fondos de Philoneural</p>
+
+<div class="cards">
+
+  <!-- Option A: Minimal ink splats -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#fafaf8;height:220px;position:relative;overflow:hidden;border:1px solid #e0dedd;">
+      <!-- Simulated minimal ink drops -->
+      <svg viewBox="0 0 400 220" style="width:100%;height:100%;position:absolute;inset:0">
+        <rect width="400" height="220" fill="#fafaf8"/>
+        <!-- Nav bar hint -->
+        <rect x="0" y="0" width="400" height="32" fill="#fafaf8" opacity=".95"/>
+        <text x="20" y="21" font-family="Georgia,serif" font-size="11" fill="#0e0c0b" letter-spacing="1">Philoneural</text>
+        <!-- Section text hint -->
+        <text x="20" y="65" font-family="Georgia,serif" font-size="18" fill="#0e0c0b" font-weight="300">Where Precision</text>
+        <text x="20" y="86" font-family="Georgia,serif" font-size="18" fill="#0e0c0b" font-weight="300">Meets <tspan font-style="italic" fill="#3d3b38">Art.</tspan></text>
+        <text x="20" y="108" font-family="Georgia,serif" font-size="8" fill="#6a6866">with the precision of a brushstroke</text>
+        <!-- Subtle ink splats in corners — very small, low opacity -->
+        <ellipse cx="370" cy="30" rx="18" ry="12" fill="#111110" opacity=".04" transform="rotate(-15,370,30)"/>
+        <circle cx="362" cy="22" r="4" fill="#111110" opacity=".05"/>
+        <circle cx="380" cy="35" r="2" fill="#111110" opacity=".04"/>
+        <ellipse cx="355" cy="195" rx="22" ry="14" fill="#111110" opacity=".03" transform="rotate(20,355,195)"/>
+        <circle cx="368" cy="205" r="3" fill="#111110" opacity=".04"/>
+        <!-- Tiny ink drop details -->
+        <circle cx="374" cy="18" r="1.5" fill="#111110" opacity=".06"/>
+        <circle cx="385" cy="28" r="1" fill="#111110" opacity=".05"/>
+        <circle cx="341" cy="202" r="2" fill="#111110" opacity=".03"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>A — Gotas Discretas</h3>
+      <p>Manchas de tinta muy sutiles en las esquinas de cada sección. Casi invisibles — presencia sin ruido. Elegancia máxima.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Bold brush strokes -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#fafaf8;height:220px;position:relative;overflow:hidden;border:1px solid #e0dedd;">
+      <svg viewBox="0 0 400 220" style="width:100%;height:100%;position:absolute;inset:0">
+        <rect width="400" height="220" fill="#fafaf8"/>
+        <!-- Nav -->
+        <rect x="0" y="0" width="400" height="32" fill="#fafaf8" opacity=".95"/>
+        <text x="20" y="21" font-family="Georgia,serif" font-size="11" fill="#0e0c0b" letter-spacing="1">Philoneural</text>
+        <!-- Hero text -->
+        <text x="20" y="65" font-family="Georgia,serif" font-size="18" fill="#0e0c0b" font-weight="300">Where Precision</text>
+        <text x="20" y="86" font-family="Georgia,serif" font-size="18" fill="#0e0c0b" font-weight="300">Meets <tspan font-style="italic" fill="#3d3b38">Art.</tspan></text>
+        <text x="20" y="108" font-family="Georgia,serif" font-size="8" fill="#6a6866">with the precision of a brushstroke</text>
+        <!-- Bold ink brush stroke across hero art side -->
+        <path d="M 230 10 Q 280 40 310 20 Q 360 -5 395 15" stroke="#111110" stroke-width="8" fill="none" opacity=".07" stroke-linecap="round"/>
+        <path d="M 240 28 Q 290 55 330 38 Q 370 22 395 40" stroke="#111110" stroke-width="5" fill="none" opacity=".05" stroke-linecap="round"/>
+        <!-- Bottom ink wash -->
+        <path d="M 0 195 Q 60 185 120 190 Q 180 196 240 188 Q 300 180 360 192 Q 390 198 400 195 L 400 220 L 0 220 Z" fill="#111110" opacity=".04"/>
+        <!-- Section divider stroke -->
+        <path d="M 0 138 Q 100 130 200 135 Q 300 140 400 132" stroke="#111110" stroke-width="1.5" fill="none" opacity=".08"/>
+        <!-- Ink drips from brush -->
+        <circle cx="295" cy="48" r="3" fill="#111110" opacity=".07"/>
+        <circle cx="312" cy="52" r="1.5" fill="#111110" opacity=".06"/>
+        <circle cx="280" cy="58" r="2" fill="#111110" opacity=".05"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>B — Trazos de Pincel</h3>
+      <p>Pinceladas gestuales que cruzan el hero y los separadores de sección. Energía de taller de diseño. Más dinámico y editorial.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Ink wash / sumi-e style -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#fafaf8;height:220px;position:relative;overflow:hidden;border:1px solid #e0dedd;">
+      <svg viewBox="0 0 400 220" style="width:100%;height:100%;position:absolute;inset:0">
+        <rect width="400" height="220" fill="#fafaf8"/>
+        <!-- Nav -->
+        <rect x="0" y="0" width="400" height="32" fill="#fafaf8" opacity=".95"/>
+        <text x="20" y="21" font-family="Georgia,serif" font-size="11" fill="#0e0c0b" letter-spacing="1">Philoneural</text>
+        <!-- Hero text -->
+        <text x="20" y="65" font-family="Georgia,serif" font-size="18" fill="#0e0c0b" font-weight="300">Where Precision</text>
+        <text x="20" y="86" font-family="Georgia,serif" font-size="18" fill="#0e0c0b" font-weight="300">Meets <tspan font-style="italic" fill="#3d3b38">Art.</tspan></text>
+        <text x="20" y="108" font-family="Georgia,serif" font-size="8" fill="#6a6866">with the precision of a brushstroke</text>
+        <!-- Sumi-e ink wash: large diffuse blob top-right -->
+        <radialGradient id="inkwash1" cx="80%" cy="25%" r="35%">
+          <stop offset="0%" stop-color="#111110" stop-opacity=".09"/>
+          <stop offset="70%" stop-color="#111110" stop-opacity=".03"/>
+          <stop offset="100%" stop-color="#111110" stop-opacity="0"/>
+        </radialGradient>
+        <rect width="400" height="220" fill="url(#inkwash1)"/>
+        <!-- Second wash bottom-left -->
+        <radialGradient id="inkwash2" cx="15%" cy="85%" r="30%">
+          <stop offset="0%" stop-color="#111110" stop-opacity=".06"/>
+          <stop offset="100%" stop-color="#111110" stop-opacity="0"/>
+        </radialGradient>
+        <rect width="400" height="220" fill="url(#inkwash2)"/>
+        <!-- Splatter texture: small random dots -->
+        <circle cx="310" cy="35" r="1.5" fill="#111110" opacity=".1"/>
+        <circle cx="325" cy="28" r="1"   fill="#111110" opacity=".08"/>
+        <circle cx="298" cy="42" r="2"   fill="#111110" opacity=".07"/>
+        <circle cx="340" cy="50" r="1"   fill="#111110" opacity=".09"/>
+        <circle cx="355" cy="38" r="1.5" fill="#111110" opacity=".07"/>
+        <circle cx="370" cy="55" r="1"   fill="#111110" opacity=".06"/>
+        <!-- Organic ink shape -->
+        <path d="M 310 20 C 330 15 355 22 365 38 C 375 52 368 68 350 70 C 332 72 315 62 308 48 C 300 34 305 25 310 20 Z" fill="#111110" opacity=".04"/>
+        <!-- Bottom left organic blob -->
+        <path d="M 0 180 C 15 165 35 170 45 182 C 55 194 48 215 30 218 C 12 221 -2 210 0 195 Z" fill="#111110" opacity=".05"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>C — Lavado Sumi-e</h3>
+      <p>Manchas difusas de tinta como acuarela japonesa. Fondos con gradientes orgánicos de tinta + micro-salpicaduras. Más atmosférico y contemplativo.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;font-size:12px;opacity:.7">Haz clic para seleccionar → confirma en el terminal</p>

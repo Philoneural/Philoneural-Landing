@@ -1,0 +1,83 @@
+<h2>¿Hacia dónde va el rediseño?</h2>
+<p class="subtitle">El sitio actual tiene una estética muy artística. Queremos hacerlo más enfocado en software. ¿Cuánto viramos?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="A" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0e0e0e;padding:28px 24px;font-family:monospace;min-height:200px;position:relative;overflow:hidden;">
+      <!-- Simulated dark terminal/code aesthetic -->
+      <div style="color:#48cae4;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;opacity:.6">PHILONEURAL · SOFTWARE STUDIO</div>
+      <div style="color:#e5e2e1;font-size:22px;font-weight:300;line-height:1.3;margin-bottom:10px;font-family:system-ui">
+        We build systems<br/>that <span style="color:#a4c9ff">think.</span>
+      </div>
+      <div style="color:#606060;font-size:11px;line-height:1.6;margin-bottom:20px;font-family:system-ui">
+        Next.js · TypeScript · Cloud · AI/ML
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.3);color:#48cae4;font-size:9px;padding:3px 10px;letter-spacing:1.5px">REACT</span>
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.3);color:#48cae4;font-size:9px;padding:3px 10px;letter-spacing:1.5px">NODE.JS</span>
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.3);color:#48cae4;font-size:9px;padding:3px 10px;letter-spacing:1.5px">PYTHON</span>
+        <span style="background:rgba(72,202,228,.1);border:1px solid rgba(72,202,228,.3);color:#48cae4;font-size:9px;padding:3px 10px;letter-spacing:1.5px">AWS</span>
+      </div>
+      <!-- Grid lines suggesting code/terminal -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,rgba(72,202,228,.03));border-top:1px solid rgba(72,202,228,.05)">
+        <div style="padding:8px 0;color:#2a2a2a;font-size:9px;font-family:monospace">
+          <span style="color:#404040">01 </span><span style="color:#7dc8e8">const</span><span style="color:#b5b5b5"> studio</span><span style="color:#404040"> = new</span><span style="color:#48cae4"> Philoneural</span><span style="color:#404040">()</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dev-First, Artístico Moderado</h3>
+      <p>Mantenemos la paleta oscura y el aura premium, pero introducimos tech tags, stack visible, métricas de código. La poesía se queda pero en segundo plano. Fondo: grid de código animado + partículas.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0f;padding:28px 24px;font-family:monospace;min-height:200px;position:relative;overflow:hidden;">
+      <!-- Terminal-heavy aesthetic -->
+      <div style="background:rgba(72,202,228,.04);border:1px solid rgba(72,202,228,.12);padding:12px 16px;margin-bottom:12px;font-size:10px;color:#48cae4;font-family:monospace">
+        <span style="opacity:.4">$ </span>philoneural --mode=build --stack=fullstack
+      </div>
+      <div style="color:#e5e2e1;font-size:20px;font-weight:500;line-height:1.3;margin-bottom:8px;font-family:'Courier New',monospace;letter-spacing:-.5px">
+        &lt;Software<br/><span style="color:#a4c9ff">Architecture</span> /&gt;
+      </div>
+      <div style="color:#606060;font-size:10px;line-height:1.8;font-family:monospace">
+        <span style="color:#7dc8e8">→</span> Custom systems, built to last<br/>
+        <span style="color:#7dc8e8">→</span> AI integrations &amp; cloud infra<br/>
+        <span style="color:#7dc8e8">→</span> Full-stack, no compromises
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Terminal / Hacker Aesthetic</h3>
+      <p>La interfaz habla el lenguaje de los devs: terminales, outputs, syntax highlighting, CLI-style. Más técnico y directo. Menos serif italic, más monospace. Fondo: matrix-style code rain o scan lines.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="C" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0e0e12;padding:28px 24px;min-height:200px;position:relative;overflow:hidden;">
+      <!-- Clean agency-meets-engineering -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="border:1px solid rgba(255,255,255,.06);padding:14px;background:rgba(255,255,255,.02)">
+          <div style="color:#48cae4;font-size:18px;font-weight:300;margin-bottom:4px">40+</div>
+          <div style="color:#606060;font-size:9px;letter-spacing:1.5px;text-transform:uppercase">Projects</div>
+        </div>
+        <div style="border:1px solid rgba(255,255,255,.06);padding:14px;background:rgba(255,255,255,.02)">
+          <div style="color:#a4c9ff;font-size:18px;font-weight:300;margin-bottom:4px">8yr</div>
+          <div style="color:#606060;font-size:9px;letter-spacing:1.5px;text-transform:uppercase">Experience</div>
+        </div>
+      </div>
+      <div style="color:#e5e2e1;font-size:18px;font-weight:300;margin-bottom:8px;font-family:system-ui;letter-spacing:-.3px">
+        Engineering with<br/><span style="color:#a4c9ff">intent.</span>
+      </div>
+      <div style="height:1px;background:linear-gradient(90deg,var(--cel,#48cae4),transparent);margin:12px 0;opacity:.2"></div>
+      <div style="color:#404040;font-size:9px;letter-spacing:2px;text-transform:uppercase">Full-stack · AI/ML · Architecture</div>
+    </div>
+    <div class="card-body">
+      <h3>C — Engineering Agency Premium</h3>
+      <p>Conserva el look premium pero reemplaza el lenguaje artístico por métricas, capacidades y resultados. Menos metáforas, más evidencia. Fondo: grid hexagonal animado o circuito PCB.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px">Haz clic para seleccionar o dinos en el terminal. Podemos mezclar elementos de varias opciones.</p>

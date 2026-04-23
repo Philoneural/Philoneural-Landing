@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuestas de Rediseño — Philoneural</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    color: #b5b5b5;
+    font-family: system-ui, sans-serif;
+    padding: 40px 32px;
+    line-height: 1.6;
+  }
+  h1 { color: #e5e2e1; font-size: 1.5rem; font-weight: 300; margin-bottom: 8px; letter-spacing: -.02em; }
+  .sub { color: #606060; font-size: .82rem; margin-bottom: 40px; }
+  .proposals { display: flex; flex-direction: column; gap: 40px; }
+  .proposal {
+    border: 1px solid rgba(255,255,255,.06);
+    background: #0e0e0e;
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .3s;
+  }
+  .proposal:hover { border-color: rgba(72,202,228,.25); }
+  .proposal.selected { border-color: rgba(72,202,228,.6); box-shadow: 0 0 30px rgba(72,202,228,.08); }
+  .proposal-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .proposal-title { color: #e5e2e1; font-size: 1rem; font-weight: 500; }
+  .proposal-tag {
+    font-family: monospace;
+    font-size: .65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #48cae4;
+    background: rgba(72,202,228,.08);
+    border: 1px solid rgba(72,202,228,.2);
+    padding: 3px 10px;
+  }
+  .proposal-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .preview {
+    min-height: 340px;
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,.04);
+  }
+  .details { padding: 28px; }
+  .detail-section { margin-bottom: 22px; }
+  .detail-section h4 {
+    font-family: monospace;
+    font-size: .6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #48cae4;
+    margin-bottom: 8px;
+  }
+  .detail-section p { font-size: .8rem; color: #8e9192; line-height: 1.65; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag {
+    font-family: monospace;
+    font-size: .6rem;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border: 1px solid rgba(255,255,255,.1);
+    color: #606060;
+  }
+  .tag.hi { border-color: rgba(72,202,228,.2); color: #48cae4; background: rgba(72,202,228,.05); }
+  .tag.per { border-color: rgba(164,201,255,.2); color: #a4c9ff; background: rgba(164,201,255,.04); }
+  .check-row { margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.04); }
+  .check { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: .78rem; color: #8e9192; }
+  .check::before { content: '→'; color: #48cae4; font-size: .7rem; }
+  .check.warn::before { content: '·'; color: #606060; }
+  .select-btn {
+    margin: 20px 28px 28px;
+    display: inline-block;
+    padding: 10px 24px;
+    border: 1px solid rgba(72,202,228,.3);
+    color: #48cae4;
+    font-size: .7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: monospace;
+    background: rgba(72,202,228,.05);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .select-btn:hover { background: rgba(72,202,228,.12); border-color: rgba(72,202,228,.6); }
+
+  /* ── Proposal 1 preview ── */
+  .p1-bg { background: #0e0e0e; width: 100%; height: 100%; position: absolute; }
+  .p1-hero {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .p1-left { padding: 28px 20px; display: flex; flex-direction: column; justify-content: center; }
+  .p1-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(72,202,228,.06); border: 1px solid rgba(72,202,228,.2);
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 7px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #48cae4; margin-bottom: 12px; font-family: monospace;
+    width: fit-content;
+  }
+  .p1-chip::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: #48cae4; flex-shrink: 0; }
+  .p1-h1 { color: #e5e2e1; font-size: 18px; font-weight: 300; line-height: 1.2; margin-bottom: 6px; letter-spacing: -.02em; }
+  .p1-h1 .hl { color: #a4c9ff; }
+  .p1-sub { color: #606060; font-size: 8px; margin-bottom: 10px; }
+  .p1-stack { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+  .p1-stack span {
+    font-size: 6.5px; letter-spacing: 1px; padding: 2px 7px;
+    border: 1px solid rgba(72,202,228,.2); color: #48cae4;
+    background: rgba(72,202,228,.06); font-family: monospace;
+    text-transform: uppercase;
+  }
+  .p1-btns { display: flex; gap: 8px; align-items: center; }
+  .p1-btn-main {
+    background: #48cae4; color: #0e0e0e; font-size: 7px; padding: 5px 12px;
+    letter-spacing: 1px; text-transform: uppercase; font-weight: 600;
+  }
+  .p1-btn-ghost { color: #a4c9ff; font-size: 7px; letter-spacing: 1px; border-bottom: 1px solid rgba(164,201,255,.3); padding: 2px 0; }
+  .p1-right { position: relative; overflow: hidden; }
+  .p1-code-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(72,202,228,.03) 0%, transparent 60%);
+    display: flex; flex-direction: column; justify-content: center; padding: 20px 16px; gap: 5px;
+  }
+  .p1-code-line { font-family: monospace; font-size: 7px; line-height: 1.6; }
+  .kw { color: #7dc8e8; }
+  .fn { color: #48cae4; }
+  .st { color: #7ec8a0; }
+  .cm { color: #404040; font-style: italic; }
+  .tx { color: #8e9192; }
+  .ln { color: #2a2a2a; min-width: 14px; display: inline-block; text-align: right; margin-right: 6px; }
+  .p1-mesh {
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none;
+  }
+  /* Nav overlay */
+  .p1-nav {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(14,14,14,.7); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.03);
+    z-index: 10;
+  }
+  .p1-nav-logo { color: #e5e2e1; font-size: 9px; letter-spacing: 1px; }
+  .p1-nav-logo em { color: #a4c9ff; font-style: italic; }
+  .p1-nav-links { display: flex; gap: 14px; }
+  .p1-nav-links span { color: #404040; font-size: 6.5px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+  /* ── Proposal 2 preview ── */
+  .p2-preview { background: #090909; width: 100%; height: 100%; position: absolute; }
+  .p2-hero {
+    position: absolute; inset: 0; padding: 48px 20px 20px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .p2-section-label {
+    font-family: monospace; font-size: 6.5px; letter-spacing: 2px; color: #404040;
+    text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .p2-section-label::before { content: ''; width: 16px; height: 1px; background: #48cae4; }
+  .p2-h1 { font-size: 22px; font-weight: 300; color: #e5e2e1; line-height: 1.15; letter-spacing: -.03em; margin-bottom: 8px; }
+  .p2-h1 .hl { color: #a4c9ff; }
+  .p2-metrics {
+    display: flex; gap: 16px; margin-top: 16px; padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,.04);
+  }
+  .p2-metric { }
+  .p2-metric-n { font-size: 16px; font-weight: 300; color: #e5e2e1; line-height: 1; margin-bottom: 2px; }
+  .p2-metric-n span { font-size: 8px; color: #48cae4; }
+  .p2-metric-l { font-family: monospace; font-size: 6px; letter-spacing: 1.5px; color: #404040; text-transform: uppercase; }
+  .p2-right-col {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 48%;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .p2-service-card {
+    flex: 1;
+    background: rgba(255,255,255,.02);
+    border-left: 1px solid rgba(255,255,255,.04);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    transition: background .2s;
+  }
+  .p2-service-card:first-child { border-top: none; }
+  .p2-service-card:hover { background: rgba(72,202,228,.03); }
+  .p2-srv-n { font-family: monospace; font-size: 6px; color: #48cae4; opacity: .6; min-width: 14px; }
+  .p2-srv-name { font-size: 8px; color: #b5b5b5; }
+
+  /* ── Proposal 3 preview ── */
+  .p3-preview { background: #0c0c10; width: 100%; height: 100%; position: absolute; overflow: hidden; }
+  .p3-grid-bg {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(72,202,228,.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(72,202,228,.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .p3-hero {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; padding: 48px 24px 24px;
+    background: linear-gradient(to right, rgba(12,12,16,.95) 55%, transparent);
+  }
+  .p3-eyebrow {
+    font-family: monospace; font-size: 6.5px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: #48cae4; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .p3-eyebrow::before { content: '//'; color: #2a2a2a; }
+  .p3-h1 { font-size: 20px; font-weight: 300; color: #e5e2e1; line-height: 1.2; letter-spacing: -.025em; margin-bottom: 10px; }
+  .p3-h1 em { color: #8e9192; font-style: italic; }
+  .p3-desc { font-size: 7.5px; color: #606060; line-height: 1.7; max-width: 220px; margin-bottom: 16px; }
+  .p3-cta-row { display: flex; gap: 10px; align-items: center; }
+  .p3-cta {
+    background: transparent; border: 1px solid rgba(72,202,228,.3);
+    color: #48cae4; font-family: monospace; font-size: 7px;
+    letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 14px;
+  }
+  .p3-nodes {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .p3-node {
+    width: 72px; height: 56px;
+    background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.06);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px;
+  }
+  .p3-node-icon { width: 16px; height: 16px; color: rgba(164,201,255,.5); }
+  .p3-node-label { font-family: monospace; font-size: 5.5px; letter-spacing: 1px; color: #404040; text-transform: uppercase; }
+
+  @media (max-width: 700px) {
+    .proposal-body { grid-template-columns: 1fr; }
+    .preview { min-height: 220px; border-right: none; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .p2-right-col { display: none; }
+    .p3-nodes { display: none; }
+  }
+
+  .recommended-badge {
+    display: inline-block;
+    background: rgba(72,202,228,.12);
+    border: 1px solid rgba(72,202,228,.35);
+    color: #48cae4;
+    font-family: monospace;
+    font-size: .6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    margin-left: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Propuestas de Rediseño <span style="color:#48cae4">Philoneural</span></h1>
+<p class="sub">Basado en dirección A (Dev-First, Artístico Moderado) · Fondo Neural Mesh · Haz clic en una propuesta para seleccionarla</p>
+
+<div class="proposals">
+
+  <!-- ── PROPUESTA 1 ── -->
+  <div class="proposal" onclick="selectProposal(this,'1')" id="p1">
+    <div class="proposal-header">
+      <div>
+        <span class="proposal-title">Propuesta 1 — Precision Engineering</span>
+        <span class="recommended-badge">★ Recomendada</span>
+      </div>
+      <span class="proposal-tag">Dev-First + Elegancia</span>
+    </div>
+    <div class="proposal-body">
+
+      <!-- Preview -->
+      <div class="preview">
+        <canvas id="meshCanvas1" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div class="p1-nav">
+          <span class="p1-nav-logo">Philo<em>neural</em></span>
+          <div class="p1-nav-links">
+            <span>Stack</span><span>Projects</span><span>Services</span><span>Contact</span>
+          </div>
+        </div>
+        <div class="p1-hero">
+          <div class="p1-left" style="padding-top:40px">
+            <div class="p1-chip">Software Studio · Est. 2017</div>
+            <h1 class="p1-h1">Engineering<br/>with <span class="hl">precision.</span><br/><span style="color:#8e9192;font-size:14px;font-style:italic">No line wasted.</span></h1>
+            <div class="p1-stack">
+              <span>React</span><span>Next.js</span><span>TypeScript</span>
+              <span>Python</span><span>AWS</span><span>AI/ML</span>
+            </div>
+            <div class="p1-btns">
+              <span class="p1-btn-main">View Projects →</span>
+              <span class="p1-btn-ghost">Let's talk</span>
+            </div>
+          </div>
+          <div class="p1-right">
+            <div class="p1-code-bg">
+              <div class="p1-code-line"><span class="ln">01</span><span class="cm">// Philoneural · core system</span></div>
+              <div class="p1-code-line"><span class="ln">02</span><span class="kw">import</span> <span class="tx">{ </span><span class="fn">Intelligence</span><span class="tx"> }</span></div>
+              <div class="p1-code-line"><span class="ln">03</span><span class="kw">  from</span> <span class="st">'@philoneural/core'</span></div>
+              <div class="p1-code-line"><span class="ln">04</span></div>
+              <div class="p1-code-line"><span class="ln">05</span><span class="kw">const</span> <span class="fn">build</span> <span class="tx">= async (</span><span class="fn">spec</span><span class="tx">) => {</span></div>
+              <div class="p1-code-line"><span class="ln">06</span><span class="tx">  </span><span class="kw">const</span> <span class="tx">sys = </span><span class="kw">await</span></div>
+              <div class="p1-code-line"><span class="ln">07</span><span class="tx">    </span><span class="fn">Intelligence</span><span class="tx">.</span><span class="fn">architect</span><span class="tx">(spec)</span></div>
+              <div class="p1-code-line"><span class="ln">08</span><span class="tx">  </span><span class="kw">return</span> <span class="tx">sys.</span><span class="fn">deploy</span><span class="tx">({ </span><span class="fn">precise</span><span class="tx">: </span><span class="kw">true</span><span class="tx"> })</span></div>
+              <div class="p1-code-line"><span class="ln">09</span><span class="tx">}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="details">
+        <div class="detail-section">
+          <h4>Cambios principales</h4>
+          <p>Hero con split layout: texto + code snippet animado en vivo. Stack badges visibles desde el primer segundo. Neural mesh como fondo fijo reactivo al mouse.</p>
+        </div>
+        <div class="detail-section">
+          <h4>Tipografía</h4>
+          <p>Mantenemos Space Grotesk + JetBrains Mono. Reducimos Noto Serif a acentos puntuales — solo títulos de sección. Más sans-serif en body.</p>
+          <div class="tags">
+            <span class="tag hi">Space Grotesk</span>
+            <span class="tag hi">JetBrains Mono</span>
+            <span class="tag">Noto Serif (reducido)</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4>Scroll effects</h4>
+          <p>Scrub en Hero (título se "escribe" al entrar). Clip-path reveals en secciones. SVG path-drawing en Process. Parallax suave en backgrounds.</p>
+          <div class="tags">
+            <span class="tag hi">GSAP Scrub</span>
+            <span class="tag hi">Clip-path</span>
+            <span class="tag per">SVG Draw</span>
+            <span class="tag">Parallax</span>
+          </div>
+        </div>
+        <div class="check-row">
+          <div class="check">Stack tech visible (React, Next.js, Python, AWS)</div>
+          <div class="check">Code snippet animado en Hero</div>
+          <div class="check">Neural mesh reemplaza partículas</div>
+          <div class="check">Philosophy reformulada: principios de ingeniería</div>
+          <div class="check">Métricas con conteo animado (ya existe, se potencia)</div>
+          <div class="check warn">Conserva la esencia poética — no desaparece</div>
+        </div>
+      </div>
+
+    </div>
+    <button class="select-btn" onclick="selectProposal(document.getElementById('p1'),'1')">Elegir Propuesta 1</button>
+  </div>
+
+  <!-- ── PROPUESTA 2 ── -->
+  <div class="proposal" onclick="selectProposal(this,'2')" id="p2">
+    <div class="proposal-header">
+      <div>
+        <span class="proposal-title">Propuesta 2 — Systems & Services Focus</span>
+      </div>
+      <span class="proposal-tag">Capabilities-Led</span>
+    </div>
+    <div class="proposal-body">
+
+      <!-- Preview -->
+      <div class="preview">
+        <canvas id="meshCanvas2" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div class="p1-nav" style="background:rgba(9,9,9,.8)">
+          <span class="p1-nav-logo">Philo<em>neural</em></span>
+          <div class="p1-nav-links">
+            <span>Work</span><span>Services</span><span>Process</span><span>Contact</span>
+          </div>
+        </div>
+        <div class="p2-hero">
+          <div class="p2-section-label">Software Studio</div>
+          <h1 class="p2-h1">We build what<br/>others call <span class="hl">complex.</span></h1>
+          <p style="font-size:8px;color:#606060;line-height:1.7;max-width:200px;margin-top:8px">Full-stack systems, AI integrations, cloud architecture. Delivered.</p>
+          <div class="p2-metrics">
+            <div class="p2-metric">
+              <div class="p2-metric-n">40<span>+</span></div>
+              <div class="p2-metric-l">Projects</div>
+            </div>
+            <div class="p2-metric">
+              <div class="p2-metric-n">8<span>yr</span></div>
+              <div class="p2-metric-l">Experience</div>
+            </div>
+            <div class="p2-metric">
+              <div class="p2-metric-n">100<span>%</span></div>
+              <div class="p2-metric-l">Custom</div>
+            </div>
+          </div>
+        </div>
+        <div class="p2-right-col">
+          <div class="p2-service-card">
+            <span class="p2-srv-n">01</span>
+            <span class="p2-srv-name">Web & Mobile Apps</span>
+          </div>
+          <div class="p2-service-card">
+            <span class="p2-srv-n">02</span>
+            <span class="p2-srv-name">AI / ML Systems</span>
+          </div>
+          <div class="p2-service-card">
+            <span class="p2-srv-n">03</span>
+            <span class="p2-srv-name">Cloud Architecture</span>
+          </div>
+          <div class="p2-service-card">
+            <span class="p2-srv-n">04</span>
+            <span class="p2-srv-name">Product Design</span>
+          </div>
+          <div class="p2-service-card">
+            <span class="p2-srv-n">05</span>
+            <span class="p2-srv-name">API Integrations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="details">
+        <div class="detail-section">
+          <h4>Cambios principales</h4>
+          <p>Hero más directo: headline + métricas + servicios visibles arriba del fold. La galería de proyectos sube en prioridad. Menos filosofía, más evidencia de trabajo.</p>
+        </div>
+        <div class="detail-section">
+          <h4>Tipografía</h4>
+          <p>Predomina Space Grotesk. Los serifs quedan solo en citas y blockquotes. Títulos en sans-serif weight 300–500.</p>
+          <div class="tags">
+            <span class="tag hi">Space Grotesk (dominante)</span>
+            <span class="tag hi">JetBrains Mono</span>
+            <span class="tag">Noto Serif (mínimo)</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4>Scroll effects</h4>
+          <p>Reveals con clip-path horizontal en servicios (como apertura de cortina). Contadores animados en métricas. Cards de proyectos con parallax leve.</p>
+          <div class="tags">
+            <span class="tag hi">Clip-path slide</span>
+            <span class="tag hi">Counter animation</span>
+            <span class="tag per">Card parallax</span>
+          </div>
+        </div>
+        <div class="check-row">
+          <div class="check">Servicios y capacidades visibles en el fold</div>
+          <div class="check">Métricas más prominentes</div>
+          <div class="check">Neural mesh en background</div>
+          <div class="check">Gallery reordenada — proyectos primero</div>
+          <div class="check warn">Menos énfasis en filosofía y poesía</div>
+          <div class="check warn">Más conservador visualmente que Propuesta 1</div>
+        </div>
+      </div>
+
+    </div>
+    <button class="select-btn" onclick="event.stopPropagation();selectProposal(document.getElementById('p2'),'2')">Elegir Propuesta 2</button>
+  </div>
+
+  <!-- ── PROPUESTA 3 ── -->
+  <div class="proposal" onclick="selectProposal(this,'3')" id="p3">
+    <div class="proposal-header">
+      <div>
+        <span class="proposal-title">Propuesta 3 — Grid & Architecture</span>
+      </div>
+      <span class="proposal-tag">Technical Premium</span>
+    </div>
+    <div class="proposal-body">
+
+      <!-- Preview -->
+      <div class="preview">
+        <div class="p3-preview">
+          <div class="p3-grid-bg"></div>
+          <canvas id="meshCanvas3" style="position:absolute;inset:0;width:100%;height:100%;opacity:.5"></canvas>
+          <div class="p1-nav" style="background:rgba(12,12,16,.85)">
+            <span class="p1-nav-logo" style="font-family:monospace;font-size:8px;letter-spacing:2px">PHILONEURAL</span>
+            <div class="p1-nav-links">
+              <span>/ work</span><span>/ stack</span><span>/ about</span>
+            </div>
+          </div>
+          <div class="p3-hero">
+            <div class="p3-eyebrow">Software Architecture Studio</div>
+            <h1 class="p3-h1">Systems that<br/><em>scale</em> beyond<br/>expectations.</h1>
+            <p class="p3-desc">We architect software for the next generation of products. Full-stack, AI-native, cloud-first.</p>
+            <div class="p3-cta-row">
+              <span class="p3-cta">View Our Work</span>
+              <span style="color:#404040;font-family:monospace;font-size:7px;letter-spacing:1px">/ or scroll ↓</span>
+            </div>
+          </div>
+          <div class="p3-nodes">
+            <div class="p3-node">
+              <svg class="p3-node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M3 3h18v18H3z"/><path d="M3 9h18M9 3v18"/>
+              </svg>
+              <span class="p3-node-label">Full-stack</span>
+            </div>
+            <div class="p3-node">
+              <svg class="p3-node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>
+                <path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+              </svg>
+              <span class="p3-node-label">AI / ML</span>
+            </div>
+            <div class="p3-node">
+              <svg class="p3-node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M5 12l-2 0 9-9 9 9-2 0"/><path d="M5 12v7h14v-7"/>
+              </svg>
+              <span class="p3-node-label">Cloud</span>
+            </div>
+            <div class="p3-node">
+              <svg class="p3-node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M4 17l6-6 4 4 6-8"/>
+              </svg>
+              <span class="p3-node-label">Scale</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="details">
+        <div class="detail-section">
+          <h4>Cambios principales</h4>
+          <p>Grid de fondo sutil (líneas tenues) como base + neural mesh encima. Estética más "architecture blueprint". Iconos de capacidades visibles en Hero. Nav con estilo slash (/work, /stack).</p>
+        </div>
+        <div class="detail-section">
+          <h4>Tipografía</h4>
+          <p>Título en sans-serif ligero. Nav y labels en monospace. Noto Serif desaparece casi completamente — solo para citas aisladas.</p>
+          <div class="tags">
+            <span class="tag hi">Space Grotesk</span>
+            <span class="tag hi">JetBrains Mono (fuerte)</span>
+            <span class="tag">Noto Serif (mínimo)</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4>Scroll effects</h4>
+          <p>Grid lines que se "construyen" al hacer scroll. Iconos de capacidades que se dibujan con SVG stroke-dashoffset. Parallax en el grid de fondo.</p>
+          <div class="tags">
+            <span class="tag hi">SVG Build</span>
+            <span class="tag hi">Grid parallax</span>
+            <span class="tag per">Stroke animation</span>
+          </div>
+        </div>
+        <div class="check-row">
+          <div class="check">Estética "technical blueprint" única</div>
+          <div class="check">Capacidades visualizadas como sistema</div>
+          <div class="check">Grid + Neural mesh (capas)</div>
+          <div class="check">Nav con identidad técnica (slash paths)</div>
+          <div class="check warn">La más alejada de la estética original</div>
+          <div class="check warn">Puede sentirse fría si no se balancea bien</div>
+        </div>
+      </div>
+
+    </div>
+    <button class="select-btn" onclick="event.stopPropagation();selectProposal(document.getElementById('p3'),'3')">Elegir Propuesta 3</button>
+  </div>
+
+</div>
+
+<script>
+// ── Neural Mesh for all 3 canvases ────────────────────
+function initMesh(canvasId, nodeCount, color1, color2) {
+  const canvas = document.getElementById(canvasId)
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  function resize() {
+    canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1)
+    canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1)
+    ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1)
+  }
+  resize()
+  const W = () => canvas.offsetWidth, H = () => canvas.offsetHeight
+  const pts = Array.from({length: nodeCount}, () => ({
+    x: Math.random() * W(), y: Math.random() * H(),
+    vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+    size: Math.random() * 1.2 + .6
+  }))
+  function draw() {
+    ctx.clearRect(0, 0, W(), H())
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i]
+      p.x += p.vx; p.y += p.vy
+      if (p.x < 0 || p.x > W()) p.vx *= -1
+      if (p.y < 0 || p.y > H()) p.vy *= -1
+      for (let j = i + 1; j < pts.length; j++) {
+        const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y)
+        if (d < 85) {
+          ctx.beginPath()
+          ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y)
+          ctx.strokeStyle = `rgba(${color1},${(1 - d/85) * .15})`
+          ctx.lineWidth = .5; ctx.stroke()
+        }
+      }
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(${color2},.45)`
+      ctx.fill()
+    }
+    requestAnimationFrame(draw)
+  }
+  draw()
+}
+initMesh('meshCanvas1', 35, '72,202,228', '164,201,255')
+initMesh('meshCanvas2', 30, '72,202,228', '164,201,255')
+initMesh('meshCanvas3', 25, '72,202,228', '164,201,255')
+
+// ── Selection logic ───────────────────────────────────
+function selectProposal(el, id) {
+  document.querySelectorAll('.proposal').forEach(p => p.classList.remove('selected'))
+  el.classList.add('selected')
+  // Record for the companion
+  if (window.__recordChoice) window.__recordChoice(id, 'Propuesta ' + id)
+}
+</script>
+
+</body>
+</html>
